@@ -1,0 +1,2 @@
+Model,Threshold,Accuracy,Precision,Recall,F1 Score,ROC AUC Score,AUPRC
+Baseline Autoencoder,0.019,0.851,0.967,0.764,0.854,0.953,0.959

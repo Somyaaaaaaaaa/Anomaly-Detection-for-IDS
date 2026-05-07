@@ -4,7 +4,10 @@ __pycache__/
 *.pyd
 
 data/raw/
+
 notebooks/
+
+notes/
 
 venv/
 .env/

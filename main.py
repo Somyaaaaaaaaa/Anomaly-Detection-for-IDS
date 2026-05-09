@@ -1,7 +1,7 @@
 from src.preprocessing import load_data,preprocess_data,scale_data,extract_normal_data
 from src.model import build_autoencoder
 from src.train import train_autoencoder
-from src.evaluation import compute_reconstruction_error,plot_error_distribution,predict_anomalies,evaluate_model,plot_confusion_matrix,plot_roc_curve,plot_pr_curve,threshold_analysis, save_metrics
+from src.evaluation import compute_reconstruction_error,plot_training_history, plot_error_distribution,predict_anomalies,evaluate_model,plot_confusion_matrix,plot_roc_curve,plot_pr_curve,threshold_analysis, save_metrics
 from src.latent_analysis import extract_latent_vectors,reduce_dimensions,perform_clustering,plot_true_labels,plot_clusters,compute_silhouette_scores,plot_silhouette_scores
 train_df, test_df = load_data(
     "data/raw/KDDTrain+.txt",
@@ -18,7 +18,7 @@ input_dim = X_training_set.shape[1]
 autoencoder, encoder = build_autoencoder(input_dim)
 
 history = train_autoencoder(autoencoder, X_training_set)
-
+plot_training_history(history)
 reconstructions, mse = compute_reconstruction_error(autoencoder, X_test)
 
 plot_error_distribution(mse,y_test)

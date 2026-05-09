@@ -29,9 +29,9 @@ def plot_training_history(history):
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.title('Autoencoder Training and Validation Loss')
+    plt.legend()
     plt.savefig("outputs/plots/training_history.png")
 
-    plt.legend()
     plt.show()
 
 def plot_error_distribution(mse, y_test):
@@ -50,15 +50,19 @@ def plot_error_distribution(mse, y_test):
 
     plt.xlabel("Reconstruction Error")
     plt.title("Error Distribution")
-    plt.savefig("outputs/plots/error_distribution.png")
-    
     plt.legend()
+    plt.savefig("outputs/plots/error_distribution.png")
     plt.show()
 
-def predict_anomalies(mse, percentile=55):
-    threshold = np.percentile(mse, percentile)
+def calculate_threshold(train_mse):
+    mean_error = np.mean(train_mse)
+    std_error = np.std(train_mse)
+    threshold = (mean_error + 3 * std_error)
+    return threshold
+
+def predict_anomalies(mse,threshold):
     y_pred = (mse > threshold).astype(int)
-    return y_pred, threshold
+    return y_pred
 
 def evaluate_model(y_test, y_pred, mse):
     print("Accuracy:", accuracy_score(y_test, y_pred))
@@ -88,8 +92,8 @@ def plot_roc_curve(y_test, mse):
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('ROC Curve')
-    plt.savefig("outputs/plots/roc_curve.png")
     plt.legend()
+    plt.savefig("outputs/plots/roc_curve.png")
     plt.show()
 
 def plot_pr_curve(y_test, mse):
@@ -120,11 +124,22 @@ def threshold_analysis(mse, y_test):
     for p in threshold_percentiles:
         thresh = np.percentile(mse, p)
         y_predd = (mse > thresh).astype(int)
-        
+
         precisions.append(precision_score(y_test, y_predd))
         recalls.append(recall_score(y_test, y_predd))
         f1_scores.append(f1_score(y_test, y_predd))
-    
+
+    threshold_results = pd.DataFrame({
+        "Threshold Percentile": threshold_percentiles,
+        "Precision": precisions,
+        "Recall": recalls,
+        "F1 Score": f1_scores
+    })
+
+    print(threshold_results.round(4))
+
+    threshold_results.to_csv("outputs/metrics/threshold_analysis.csv",index=False)
+
     plt.figure(figsize=(10, 6)) 
     plt.plot(threshold_percentiles, precisions, label='Precision') 
     plt.plot(threshold_percentiles, recalls, label='Recall') 
@@ -133,6 +148,19 @@ def threshold_analysis(mse, y_test):
     plt.ylabel('Score') 
     plt.title('Threshold Comparison') 
     plt.legend() 
+    plt.savefig("outputs/plots/threshold_analysis.png")
+    plt.show()
+
+def attack_type_analysis(test_df,mse):
+
+    error_df = pd.DataFrame({'label': test_df['label'], 'reconstruction_error': mse})
+    attack_analysis = error_df.groupby('label')['reconstruction_error'].mean()
+    print(attack_analysis.sort_values(ascending=False))
+    attack_analysis.sort_values(ascending=False).plot(kind='bar',figsize=(12, 6))
+    plt.xlabel('Attack Type')
+    plt.ylabel('Average Reconstruction Error')
+    plt.title('Average Reconstruction Error by Attack Type')
+    plt.savefig('outputs/plots/attack_type_analysis.png')
     plt.show()
 
 def save_metrics(y_test, y_pred, mse, threshold):

@@ -1,38 +1,39 @@
 # Network Intrusion Detection using Deep Autoencoders
 
-An unsupervised deep learning-based intrusion detection framework that uses autoencoders to identify anomalous network behavior through autoencoders and latent-space analysis.
+A fully unsupervised deep learning-based intrusion detection framework that uses reconstruction-based anomaly detection and latent-space analysis to identify anomalous network behavior.
 
 ---
 
 ## Overview
 
-Traditional signature-based intrusion detection systems struggle against evolving and previously unseen attack patterns. This project explores an unsupervised anomaly detection approach where a deep autoencoder is trained exclusively on normal network traffic and learns compressed behavioral representations of legitimate activity.
+Traditional signature-based intrusion detection systems struggle against evolving and previously unseen attack patterns. This project explores a fully unsupervised anomaly detection approach where a deep autoencoder is trained exclusively on normal network traffic and learns compressed behavioral representations of legitimate activity.
 
 When malicious traffic deviates from learned normal behavior, reconstruction error increases significantly, allowing anomalous network events to be detected without relying on predefined attack signatures.
 
 In addition to anomaly detection, this project investigates the internal latent-space structure learned by the encoder using clustering analysis, PCA-based visualization, and silhouette scoring.
 
-The system was implemented and evaluated on the NSL-KDD dataset.
+The system was implemented and evaluated using the NSL-KDD intrusion detection dataset.
 
 ---
 
 ## Key Features
 
-- Unsupervised anomaly detection using deep autoencoders
-- Reconstruction-error-based attack detection
-- Latent-space representation learning
-- PCA visualization of compressed traffic representations
-- KMeans clustering analysis in latent space
-- Silhouette score evaluation for cluster quality
-- Threshold sensitivity analysis
-- ROC and Precision-Recall analysis
-- Modular ML pipeline architecture
-- Automated experiment artifact generation
+* Fully unsupervised anomaly detection using deep autoencoders
+* Reconstruction-error-based intrusion detection
+* Latent-space representation learning
+* PCA visualization of compressed traffic representations
+* KMeans clustering analysis in latent space
+* Silhouette score evaluation for cluster quality
+* Threshold sensitivity analysis
+* ROC and Precision-Recall analysis
+* Modular ML pipeline architecture
+* Automated experiment artifact generation
 
 ---
 
 ## System Architecture
 
+```text
 NSL-KDD Dataset
         ↓
 Data Preprocessing
@@ -47,9 +48,10 @@ Latent Representation Learning
         ↓
 Reconstruction Error Computation
         ↓
-Threshold-Based Anomaly Detection
+Statistical Thresholding
         ↓
 Evaluation + Latent Space Analysis
+```
 
 ---
 
@@ -67,7 +69,7 @@ Files:
 The dataset contains:
 
 * normal network traffic
-* denial-of-service attacks
+* denial-of-service (DoS) attacks
 * probing attacks
 * privilege escalation attacks
 * remote access attacks
@@ -77,12 +79,15 @@ The dataset contains:
 ## Model Architecture
 
 ### Encoder
+
 Input → 64 → 32 → 16
 
 ### Bottleneck Representation
+
 8-dimensional latent space
 
 ### Decoder
+
 16 → 32 → 64 → Output
 
 Dropout regularization was applied during encoding to improve generalization and reduce overfitting.
@@ -106,8 +111,10 @@ The model learns compressed representations of legitimate traffic behavior and i
 1. Train the autoencoder exclusively on normal traffic.
 2. Reconstruct unseen network traffic samples.
 3. Compute reconstruction error using Mean Squared Error.
-4. Apply percentile-based thresholding.
+4. Apply statistical thresholding based on reconstruction-error distribution.
 5. Flag high-error samples as anomalies.
+
+Threshold sensitivity analysis was additionally performed using percentile-based threshold variations to study precision-recall tradeoffs under different anomaly sensitivity conditions.
 
 ---
 
@@ -130,14 +137,16 @@ The following metrics were used to evaluate detection performance:
 
 | Metric    | Score |
 | --------- | ----- |
-| Accuracy  | 0.819 |
-| Precision | 0.932 |
-| Recall    | 0.737 |
-| F1 Score  | 0.823 |
-| ROC-AUC   | 0.950 |
-| AUPRC     | 0.962 |
+| Accuracy  | 0.827 |
+| Precision | 0.940 |
+| Recall    | 0.743 |
+| F1 Score  | 0.830 |
+| ROC-AUC   | 0.942 |
+| AUPRC     | 0.963 |
 
 The model demonstrated strong anomaly detection capability despite operating in a fully unsupervised setting.
+
+Additional threshold sensitivity and clustering analysis further demonstrated the effectiveness of the learned latent representations for behavioral characterization of network traffic.
 
 ---
 
@@ -218,6 +227,8 @@ Potential extensions include:
 * Ensemble anomaly detection
 * Attention-based architectures
 * Online learning for evolving attack behavior
+* Automated continuous traffic monitoring pipelines
+* Explainable AI for latent-space interpretability
 
 ---
 
@@ -225,10 +236,12 @@ Potential extensions include:
 
 Modern cyber threats evolve faster than static signature databases can adapt. This project explores how unsupervised representation learning can contribute toward more adaptive intrusion detection systems capable of identifying previously unseen attack behaviors.
 
+The project additionally investigates latent-space organization and behavioral representation learning in order to better understand how deep autoencoder architectures internally characterize anomalous network traffic patterns.
+
 ---
 
 ## Author
 
-Somya
+**Somya**
 BSc Data Science
 Deep Learning • Cybersecurity • Representation Learning
